@@ -1,0 +1,26 @@
+# Data files (downloaded at runtime)
+data/samples/*
+!data/samples/.gitkeep
+data/logs/*.json
+data/logs/*.zip
+!data/logs/test-events.json
+!data/logs/.gitkeep
+
+# OpenSearch data
+opensearch-data/
+
+# DeTTECT output (generated)
+dettect/output/*
+!dettect/output/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# OS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/

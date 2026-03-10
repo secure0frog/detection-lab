@@ -1,0 +1,181 @@
+version: 1.1
+file_type: data-source-administration
+name: Detection Lab Endpoints
+domain: enterprise-attack
+systems:
+  - applicable_to: Windows workstations
+    platform:
+      - Windows
+
+data_sources:
+  - data_source_name: Process Creation
+    data_source:
+      - applicable_to:
+          - Windows workstations
+        date_registered: 2024-01-01
+        date_connected: 2024-01-01
+        products:
+          - Sysmon
+          - Windows Event Log
+        available_for_data_analytics: true
+        comment: "Sysmon Event ID 1 - process creation with full command line"
+        data_quality:
+          device_completeness: 4
+          data_field_completeness: 5
+          timeliness: 4
+          consistency: 4
+          retention: 3
+
+  - data_source_name: Command Execution
+    data_source:
+      - applicable_to:
+          - Windows workstations
+        date_registered: 2024-01-01
+        date_connected: 2024-01-01
+        products:
+          - Sysmon
+          - PowerShell Script Block Logging
+        available_for_data_analytics: true
+        comment: "PowerShell script block logging (Event ID 4104) and Sysmon process creation"
+        data_quality:
+          device_completeness: 4
+          data_field_completeness: 4
+          timeliness: 3
+          consistency: 4
+          retention: 3
+
+  - data_source_name: Network Traffic Flow
+    data_source:
+      - applicable_to:
+          - Windows workstations
+        date_registered: 2024-01-01
+        date_connected: 2024-01-01
+        products:
+          - Sysmon
+        available_for_data_analytics: true
+        comment: "Sysmon Event ID 3 - Network connection"
+        data_quality:
+          device_completeness: 3
+          data_field_completeness: 3
+          timeliness: 3
+          consistency: 3
+          retention: 2
+
+  - data_source_name: File Modification
+    data_source:
+      - applicable_to:
+          - Windows workstations
+        date_registered: 2024-01-01
+        date_connected: 2024-01-01
+        products:
+          - Sysmon
+        available_for_data_analytics: true
+        comment: "Sysmon Event ID 11 - File created"
+        data_quality:
+          device_completeness: 4
+          data_field_completeness: 4
+          timeliness: 4
+          consistency: 4
+          retention: 3
+
+  - data_source_name: Windows Registry Key Modification
+    data_source:
+      - applicable_to:
+          - Windows workstations
+        date_registered: 2024-01-01
+        date_connected: 2024-01-01
+        products:
+          - Sysmon
+        available_for_data_analytics: true
+        comment: "Sysmon Event IDs 12, 13, 14 - Registry events"
+        data_quality:
+          device_completeness: 4
+          data_field_completeness: 4
+          timeliness: 4
+          consistency: 4
+          retention: 3
+
+  - data_source_name: Logon Session Creation
+    data_source:
+      - applicable_to:
+          - Windows workstations
+        date_registered: 2024-01-01
+        date_connected: 2024-01-01
+        products:
+          - Windows Event Log
+        available_for_data_analytics: true
+        comment: "Windows Security Event ID 4624, 4625"
+        data_quality:
+          device_completeness: 4
+          data_field_completeness: 4
+          timeliness: 3
+          consistency: 4
+          retention: 3
+
+  - data_source_name: Module Load
+    data_source:
+      - applicable_to:
+          - Windows workstations
+        date_registered: 2024-01-01
+        date_connected: 2024-01-01
+        products:
+          - Sysmon
+        available_for_data_analytics: true
+        comment: "Sysmon Event ID 7 - Image loaded (DLL)"
+        data_quality:
+          device_completeness: 3
+          data_field_completeness: 4
+          timeliness: 3
+          consistency: 3
+          retention: 2
+
+  - data_source_name: Scheduled Job Creation
+    data_source:
+      - applicable_to:
+          - Windows workstations
+        date_registered: 2024-01-01
+        date_connected: 2024-01-01
+        products:
+          - Windows Event Log
+        available_for_data_analytics: true
+        comment: "Windows Security Event ID 4698 - Scheduled task created"
+        data_quality:
+          device_completeness: 4
+          data_field_completeness: 3
+          timeliness: 3
+          consistency: 4
+          retention: 3
+
+  - data_source_name: Process Access
+    data_source:
+      - applicable_to:
+          - Windows workstations
+        date_registered: 2024-01-01
+        date_connected: 2024-01-01
+        products:
+          - Sysmon
+        available_for_data_analytics: true
+        comment: "Sysmon Event ID 10 - Process accessed"
+        data_quality:
+          device_completeness: 3
+          data_field_completeness: 4
+          timeliness: 3
+          consistency: 3
+          retention: 2
+
+  - data_source_name: Windows Registry Key Creation
+    data_source:
+      - applicable_to:
+          - Windows workstations
+        date_registered: 2024-01-01
+        date_connected: 2024-01-01
+        products:
+          - Sysmon
+        available_for_data_analytics: true
+        comment: "Sysmon Event ID 12 - Registry object added"
+        data_quality:
+          device_completeness: 4
+          data_field_completeness: 4
+          timeliness: 4
+          consistency: 4
+          retention: 3

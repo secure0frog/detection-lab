@@ -1,0 +1,318 @@
+version: 1.2
+file_type: technique-administration
+name: Detection Lab Techniques
+domain: enterprise-attack
+platform:
+  - Windows
+
+techniques:
+  - technique_id: T1059.001
+    technique_name: "Command and Scripting Interpreter: PowerShell"
+    detection:
+      - applicable_to:
+          - all
+        location:
+          - Sysmon
+          - YARA log rules
+        comment: "Detect encoded PowerShell and download cradle patterns via Sysmon process creation + YARA log scanning"
+        score_logbook:
+          - date: 2024-01-15
+            score: 3
+            comment: "Script block logging + command-line monitoring + YARA pattern matching active"
+    visibility:
+      - applicable_to:
+          - all
+        comment: "Full visibility via Sysmon process creation + PowerShell script block logging"
+        score_logbook:
+          - date: 2024-01-15
+            score: 3
+
+  - technique_id: T1003.001
+    technique_name: "OS Credential Dumping: LSASS Memory"
+    detection:
+      - applicable_to:
+          - all
+        location:
+          - Sysmon
+          - YARA file rules
+          - YARA log rules
+        comment: "Detect Mimikatz via YARA file scan + Sysmon process access + YARA log pattern matching"
+        score_logbook:
+          - date: 2024-01-15
+            score: 2
+            comment: "Partial detection - known tool signatures via YARA + Sysmon process access"
+    visibility:
+      - applicable_to:
+          - all
+        comment: "Sysmon Event ID 10 for process access to lsass.exe"
+        score_logbook:
+          - date: 2024-01-15
+            score: 2
+
+  - technique_id: T1055.001
+    technique_name: "Process Injection: Dynamic-link Library Injection"
+    detection:
+      - applicable_to:
+          - all
+        location:
+          - Sysmon
+        comment: "Detect DLL injection via Sysmon module load events"
+        score_logbook:
+          - date: 2024-01-15
+            score: 1
+            comment: "Basic detection via Sysmon image load monitoring"
+    visibility:
+      - applicable_to:
+          - all
+        comment: "Sysmon Event ID 7 (Image Loaded) provides visibility"
+        score_logbook:
+          - date: 2024-01-15
+            score: 2
+
+  - technique_id: T1021.002
+    technique_name: "Remote Services: SMB/Windows Admin Shares"
+    detection:
+      - applicable_to:
+          - all
+        location:
+          - Sysmon
+          - YARA log rules
+        comment: "Detect PsExec and SMB lateral movement via YARA log patterns + Sysmon"
+        score_logbook:
+          - date: 2024-01-15
+            score: 2
+            comment: "PsExec and WMI patterns detected via YARA + Sysmon process creation"
+    visibility:
+      - applicable_to:
+          - all
+        comment: "Network connection monitoring via Sysmon Event ID 3 + authentication logs"
+        score_logbook:
+          - date: 2024-01-15
+            score: 2
+
+  - technique_id: T1547.001
+    technique_name: "Boot or Logon Autostart Execution: Registry Run Keys"
+    detection:
+      - applicable_to:
+          - all
+        location:
+          - Sysmon
+          - YARA log rules
+        comment: "Detect registry Run key modifications via Sysmon + YARA log patterns"
+        score_logbook:
+          - date: 2024-01-15
+            score: 3
+            comment: "Registry modification monitoring via Sysmon + YARA pattern matching"
+    visibility:
+      - applicable_to:
+          - all
+        comment: "Sysmon Event IDs 12, 13 for registry key creation and modification"
+        score_logbook:
+          - date: 2024-01-15
+            score: 3
+
+  - technique_id: T1070.001
+    technique_name: "Indicator Removal: Clear Windows Event Logs"
+    detection:
+      - applicable_to:
+          - all
+        location:
+          - Windows Event Log
+          - YARA log rules
+        comment: "Detect event log clearing commands via YARA log rules + Security Event ID 1102"
+        score_logbook:
+          - date: 2024-01-15
+            score: 3
+            comment: "Event log clearing detected via YARA + Windows audit events"
+    visibility:
+      - applicable_to:
+          - all
+        comment: "Windows Security Event ID 1102 (Audit log was cleared)"
+        score_logbook:
+          - date: 2024-01-15
+            score: 3
+
+  - technique_id: T1078
+    technique_name: "Valid Accounts"
+    detection:
+      - applicable_to:
+          - all
+        location:
+          - Windows Event Log
+        comment: "Detect suspicious logon patterns via Windows authentication events"
+        score_logbook:
+          - date: 2024-01-15
+            score: 1
+            comment: "Baseline-dependent detection - requires normal behavior profiling"
+    visibility:
+      - applicable_to:
+          - all
+        comment: "Windows Security Event IDs 4624/4625 for logon success/failure"
+        score_logbook:
+          - date: 2024-01-15
+            score: 3
+
+  - technique_id: T1053.005
+    technique_name: "Scheduled Task/Job: Scheduled Task"
+    detection:
+      - applicable_to:
+          - all
+        location:
+          - Windows Event Log
+          - YARA log rules
+        comment: "Detect scheduled task creation via YARA log patterns + Security Event ID 4698"
+        score_logbook:
+          - date: 2024-01-15
+            score: 3
+            comment: "Scheduled task creation detected via YARA + Windows audit events"
+    visibility:
+      - applicable_to:
+          - all
+        comment: "Windows Security Event ID 4698 + Sysmon process creation"
+        score_logbook:
+          - date: 2024-01-15
+            score: 3
+
+  - technique_id: T1204.002
+    technique_name: "User Execution: Malicious File"
+    detection:
+      - applicable_to:
+          - all
+        location:
+          - YARA file rules
+        comment: "Detect malicious files via YARA file scanning (PE headers, known signatures)"
+        score_logbook:
+          - date: 2024-01-15
+            score: 2
+            comment: "YARA file-based detection for known malware signatures"
+    visibility:
+      - applicable_to:
+          - all
+        comment: "Sysmon Event ID 11 (File created) + YARA file scanning"
+        score_logbook:
+          - date: 2024-01-15
+            score: 2
+
+  - technique_id: T1059.003
+    technique_name: "Command and Scripting Interpreter: Windows Command Shell"
+    detection:
+      - applicable_to:
+          - all
+        location:
+          - Sysmon
+        comment: "Detect suspicious cmd.exe usage via Sysmon process creation"
+        score_logbook:
+          - date: 2024-01-15
+            score: 2
+            comment: "Command-line parameter monitoring via Sysmon"
+    visibility:
+      - applicable_to:
+          - all
+        comment: "Sysmon Event ID 1 with full command-line logging"
+        score_logbook:
+          - date: 2024-01-15
+            score: 3
+
+  - technique_id: T1027
+    technique_name: "Obfuscated Files or Information"
+    detection:
+      - applicable_to:
+          - all
+        location:
+          - YARA file rules
+          - YARA log rules
+        comment: "Detect obfuscation patterns via YARA rules"
+        score_logbook:
+          - date: 2024-01-15
+            score: 1
+            comment: "Basic obfuscation detection - encoded commands"
+    visibility:
+      - applicable_to:
+          - all
+        comment: "Script block logging can reveal deobfuscated content"
+        score_logbook:
+          - date: 2024-01-15
+            score: 2
+
+  - technique_id: T1543.003
+    technique_name: "Create or Modify System Process: Windows Service"
+    detection:
+      - applicable_to:
+          - all
+        location:
+          - Sysmon
+          - Windows Event Log
+        comment: "Detect new service creation via Security Event ID 4697 + Sysmon"
+        score_logbook:
+          - date: 2024-01-15
+            score: 2
+            comment: "Service creation monitoring"
+    visibility:
+      - applicable_to:
+          - all
+        comment: "Windows System Event ID 7045 + Security Event ID 4697"
+        score_logbook:
+          - date: 2024-01-15
+            score: 3
+
+  - technique_id: T1562.001
+    technique_name: "Impair Defenses: Disable or Modify Tools"
+    detection:
+      - applicable_to:
+          - all
+        location:
+          - Sysmon
+          - Windows Event Log
+        comment: "Detect security tool tampering"
+        score_logbook:
+          - date: 2024-01-15
+            score: 1
+            comment: "Limited detection - requires monitoring specific security service states"
+    visibility:
+      - applicable_to:
+          - all
+        comment: "Sysmon + Windows service state change events"
+        score_logbook:
+          - date: 2024-01-15
+            score: 2
+
+  - technique_id: T1071.001
+    technique_name: "Application Layer Protocol: Web Protocols"
+    detection:
+      - applicable_to:
+          - all
+        location:
+          - Sysmon
+        comment: "Detect suspicious HTTP/S traffic via Sysmon network connection events"
+        score_logbook:
+          - date: 2024-01-15
+            score: 1
+            comment: "Basic detection - known C2 ports and suspicious user agents"
+    visibility:
+      - applicable_to:
+          - all
+        comment: "Sysmon Event ID 3 for network connections + proxy logs"
+        score_logbook:
+          - date: 2024-01-15
+            score: 2
+
+  - technique_id: T1486
+    technique_name: "Data Encrypted for Impact"
+    detection:
+      - applicable_to:
+          - all
+        location:
+          - Sysmon
+          - YARA file rules
+        comment: "Detect ransomware indicators via YARA file scanning + mass file modification patterns"
+        score_logbook:
+          - date: 2024-01-15
+            score: 1
+            comment: "Basic detection via known ransomware signatures"
+    visibility:
+      - applicable_to:
+          - all
+        comment: "Sysmon Event ID 11 for file creation + FIM"
+        score_logbook:
+          - date: 2024-01-15
+            score: 2

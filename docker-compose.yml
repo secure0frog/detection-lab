@@ -1,0 +1,118 @@
+services:
+  opensearch:
+    image: opensearchproject/opensearch:${OPENSEARCH_VERSION}
+    container_name: opensearch
+    environment:
+      - discovery.type=single-node
+      - node.name=opensearch
+      - OPENSEARCH_JAVA_OPTS=${OPENSEARCH_JAVA_OPTS}
+      - plugins.security.disabled=true
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+    ports:
+      - "${OPENSEARCH_PORT}:9200"
+    networks:
+      - lab-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          memory: 1536m
+
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:${OPENSEARCH_DASHBOARDS_VERSION}
+    container_name: opensearch-dashboards
+    environment:
+      - OPENSEARCH_HOSTS=["http://opensearch:9200"]
+      - DISABLE_SECURITY_DASHBOARDS_PLUGIN=true
+    ports:
+      - "${DASHBOARDS_PORT}:5601"
+    networks:
+      - lab-net
+    depends_on:
+      opensearch:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 1024m
+
+  dettect:
+    image: ${DETTECT_IMAGE}
+    container_name: dettect
+    ports:
+      - "${DETTECT_EDITOR_PORT}:8080"
+    volumes:
+      - ./dettect/input:/opt/DeTTECT/input
+      - ./dettect/output:/opt/DeTTECT/output
+    networks:
+      - lab-net
+    stdin_open: true
+    tty: true
+    command: >
+      bash -c "python dettect.py editor &
+               echo 'DeTTECT editor started on port 8080';
+               tail -f /dev/null"
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+
+  yara-scanner:
+    build:
+      context: ./yara-scanner
+      dockerfile: Dockerfile
+    container_name: yara-scanner
+    ports:
+      - "${YARA_SCANNER_PORT}:8081"
+    volumes:
+      - ./data/samples:/app/samples:ro
+      - ./data/logs:/app/logs:ro
+      - ./data/yara-rules:/app/rules:ro
+    networks:
+      - lab-net
+    depends_on:
+      opensearch:
+        condition: service_healthy
+    environment:
+      - OPENSEARCH_URL=http://opensearch:9200
+      - RULES_DIR=/app/rules
+      - SAMPLES_DIR=/app/samples
+      - LOGS_DIR=/app/logs
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+
+  data-loader:
+    build:
+      context: ./data-loader
+      dockerfile: Dockerfile
+    container_name: data-loader
+    volumes:
+      - ./data/logs:/app/logs
+      - ./data/samples:/app/samples
+    networks:
+      - lab-net
+    depends_on:
+      opensearch:
+        condition: service_healthy
+    environment:
+      - OPENSEARCH_URL=http://opensearch:9200
+    profiles:
+      - init
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+
+volumes:
+  opensearch-data:
+
+networks:
+  lab-net:
+    driver: bridge
