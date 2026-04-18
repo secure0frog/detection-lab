@@ -7,6 +7,7 @@ services:
       - node.name=opensearch
       - OPENSEARCH_JAVA_OPTS=${OPENSEARCH_JAVA_OPTS}
       - plugins.security.disabled=true
+      - DISABLE_INSTALL_DEMO_CONFIG=true
     volumes:
       - opensearch-data:/usr/share/opensearch/data
     ports:
